@@ -1,0 +1,150 @@
+{
+  "version": 1,
+  "cli": {
+    "defaultCollection": "@nrwl/angular"
+  },
+  "defaultProject": "medium-source",
+  "schematics": {
+    "@nrwl/angular": {
+      "application": {
+        "linter": "eslint"
+      },
+      "library": {
+        "linter": "eslint"
+      },
+      "storybook-configuration": {
+        "linter": "eslint"
+      }
+    },
+    "@nrwl/angular:application": {
+      "style": "scss",
+      "linter": "eslint",
+      "unitTestRunner": "jest",
+      "e2eTestRunner": "cypress"
+    },
+    "@nrwl/angular:library": {
+      "style": "scss",
+      "linter": "eslint",
+      "unitTestRunner": "jest"
+    },
+    "@nrwl/angular:component": {
+      "style": "scss"
+    }
+  },
+  "projects": {
+    "medium-source": {
+      "projectType": "application",
+      "root": "apps/medium-source",
+      "sourceRoot": "apps/medium-source/src",
+      "prefix": "ng-long-code",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:browser",
+          "options": {
+            "outputPath": "dist/apps/medium-source",
+            "index": "apps/medium-source/src/index.html",
+            "main": "apps/medium-source/src/main.ts",
+            "polyfills": "apps/medium-source/src/polyfills.ts",
+            "tsConfig": "apps/medium-source/tsconfig.app.json",
+            "aot": true,
+            "assets": [
+              "apps/medium-source/src/favicon.ico",
+              "apps/medium-source/src/assets"
+            ],
+            "styles": ["apps/medium-source/src/styles.scss"],
+            "scripts": []
+          },
+          "configurations": {
+            "production": {
+              "fileReplacements": [
+                {
+                  "replace": "apps/medium-source/src/environments/environment.ts",
+                  "with": "apps/medium-source/src/environments/environment.prod.ts"
+                }
+              ],
+              "optimization": true,
+              "outputHashing": "all",
+              "sourceMap": false,
+              "namedChunks": false,
+              "extractLicenses": true,
+              "vendorChunk": false,
+              "buildOptimizer": true,
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "2mb",
+                  "maximumError": "5mb"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "6kb",
+                  "maximumError": "10kb"
+                }
+              ]
+            }
+          }
+        },
+        "serve": {
+          "builder": "@angular-devkit/build-angular:dev-server",
+          "options": {
+            "browserTarget": "medium-source:build"
+          },
+          "configurations": {
+            "production": {
+              "browserTarget": "medium-source:build:production"
+            }
+          }
+        },
+        "extract-i18n": {
+          "builder": "@angular-devkit/build-angular:extract-i18n",
+          "options": {
+            "browserTarget": "medium-source:build"
+          }
+        },
+        "lint": {
+          "builder": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": [
+              "apps/medium-source/src/**/*.ts",
+              "apps/medium-source/src/**/*.html"
+            ]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "outputs": ["coverage/apps/medium-source"],
+          "options": {
+            "jestConfig": "apps/medium-source/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
+    },
+    "medium-source-e2e": {
+      "root": "apps/medium-source-e2e",
+      "sourceRoot": "apps/medium-source-e2e/src",
+      "projectType": "application",
+      "architect": {
+        "e2e": {
+          "builder": "@nrwl/cypress:cypress",
+          "options": {
+            "cypressConfig": "apps/medium-source-e2e/cypress.json",
+            "tsConfig": "apps/medium-source-e2e/tsconfig.e2e.json",
+            "devServerTarget": "medium-source:serve"
+          },
+          "configurations": {
+            "production": {
+              "devServerTarget": "medium-source:serve:production"
+            }
+          }
+        },
+        "lint": {
+          "builder": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": ["apps/medium-source-e2e/**/*.{js,ts}"]
+          }
+        }
+      }
+    }
+  }
+}
